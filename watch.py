@@ -1,4 +1,5 @@
 from selenium import webdriver 
+import json
 
 def main():
   urls = ["matchpremierhd","matchtvhd","matchfootball1hd","matchfootball2hd","matchfootball3hd"]
@@ -11,9 +12,10 @@ def main():
   sourceurl = devices[numberdevice-1]
 
   driver = webdriver.Chrome()  
-  url = "https://www.tvplusonline.ru/getsignedurlcdnv3.php?c=" + urls[int(chanelnumber-1)] + "&q=1"
+  url = "https://www.tvplusonline.ru/api/channels/hls/" + urls[int(chanelnumber-1)] + "&q=1"
   driver.get(url)
-  url = driver.find_element_by_tag_name('body').text
+  url = json.loads(driver.find_element_by_tag_name('body').text)["url"]
+  print(url)
 
   if numberdevice == 1:
     driver.get(sourceurl)
@@ -30,6 +32,6 @@ def main():
     inputURL.send_keys(url)
     button = driver.find_element_by_css_selector("body > div.main > form > div > button")
     button.click()
-    driver.wait()
+    driver.wait(10)
 if __name__ == "__main__":
   main()
